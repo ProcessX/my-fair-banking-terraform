@@ -1,16 +1,9 @@
-resource "azurerm_virtual_network" "vnet" {
-  name = var.vnet_name
-  resource_group_name = var.resource_group_name
-  location = var.location
-  address_space = var.address_space
-}
 
 resource "azurerm_subnet" "subnet" {
   name = var.subnet_name
   resource_group_name = var.resource_group_name
   virtual_network_name = var.vnet_name
-  address_prefixes = ["10.0.1.0/24"]
-  depends_on = [ azurerm_virtual_network.vnet ]
+  address_prefixes = ["10.0.4.0/24"]
 }
 
 resource "azurerm_public_ip" "public_ip" {
@@ -86,51 +79,6 @@ resource "azurerm_storage_account" "storage" {
     environment = var.environment_name
   }
 }
-
-resource "tls_private_key" "ssh_key" {
-  algorithm = "RSA"
-  rsa_bits = 4096
-}
-
-/*
-resource "azurerm_linux_virtual_machine" "linuxvm" {
-  name = var.vm_name
-  resource_group_name = var.resource_group_name
-  location = var.location
-  network_interface_ids = [azurerm_network_interface.nic.id]
-  size = "Standard_DS1_v2"
-
-  os_disk {
-    name = "myOsDisk"
-    caching = "ReadWrite"
-    storage_account_type = "Standard_LRS"
-  }
-
-  source_image_reference {
-    publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts"
-    version   = "latest"
-  }
-
-  computer_name = "controller"
-  admin_username = "azureuser"
-  disable_password_authentication = true
-
-  admin_ssh_key {
-    username = "azureuser"
-    public_key = tls_private_key.ssh_key.public_key_openssh
-  }
-
-  boot_diagnostics {
-    storage_account_uri = azurerm_storage_account.storage.primary_blob_endpoint
-  }
-
-  tags = {
-    environment = var.environment_name
-  }
-}
-*/
 
 resource "azurerm_windows_virtual_machine" "windowsvm" {
   name                  = var.vm_name

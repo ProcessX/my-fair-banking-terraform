@@ -86,4 +86,7 @@ variable "sql_server_name" {
   default = "sql-server"
 }
 
-//ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCd+H32d4e4pZs9BqVe7nf3a03jvkkTngw
+variable "address_prefixes" {
+  type = list(string)
+  default = [ "10.0.2.0/24"]
+}

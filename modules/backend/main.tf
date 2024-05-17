@@ -4,7 +4,7 @@ resource "azurerm_subnet" "subnet" {
   name = "${var.subnet_name}_${var.service_list[count.index]}_${var.environment_name}"
   resource_group_name = var.resource_group_name
   virtual_network_name = var.vnet_name
-  address_prefixes = ["10.0.2.0/24"]
+  address_prefixes = var.address_prefixes
 }
 
 resource "azurerm_public_ip" "public_ip" {

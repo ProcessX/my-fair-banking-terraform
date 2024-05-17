@@ -10,52 +10,48 @@ variable "location" {
   description = "Infrastructure's location"
 }
 
-variable "address_space" {
-  type = list(string)
-  description = "The address space that is used by the virtual network."
+variable "vnet_name" {
+  type = string
+  description = "Name of the common vnet for the project."
 }
+
 
 
 
 //MODULE
 
-variable "vnet_name" {
-  type = string
-  description = "Name of the test's virtual network"
-  default = "vnet_test"
-}
 
 variable "subnet_name" {
   type = string
-  description = "Name of the test's subnet"
-  default = "subnet_test"
+  description = "Name of the dynamictest's subnet"
+  default = "subnet_dynamictest"
 }
 
 variable "public_ip_name" {
   type = string
-  description = "Name of the test's public IP"
-  default = "ip_test"
+  description = "Name of the dynamictest's public IP"
+  default = "ip_dynamictest"
 }
 
 variable "environment_name" {
   type = string
-  description = "test environment"
-  default = "test"
+  description = "dynamictest environment"
+  default = "devops"
 }
 
 variable "sg_name" {
   type = string
-  description = "Name of the test's security group"
-  default = "sg_test"
+  description = "Name of the dynamictest's security group"
+  default = "sg_dynamictest"
 }
 
 variable "network_interface_name" {
   type = string
-  default = "nic_test"
+  default = "nic_dynamictest"
 }
 
 variable "vm_name" {
   type = string
-  description = "Name of the test's virtual machine"
-  default = "test"
+  description = "Name of the dynamictest's virtual machine"
+  default = "dynamictest"
 }
