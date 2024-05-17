@@ -1,10 +1,3 @@
-resource "azurerm_virtual_network" "vnet" {
-  name = "${var.vnet_name}_${var.environment_name}"
-  resource_group_name = var.resource_group_name
-  location = var.location
-  address_space = var.address_space
-}
-
 resource "azurerm_subnet" "subnet" {
   name = "${var.subnet_name}_${var.environment_name}"
   resource_group_name = var.resource_group_name
@@ -86,11 +79,6 @@ resource "azurerm_storage_account" "storage" {
   }
 }
 
-resource "tls_private_key" "ssh_key" {
-  algorithm = "RSA"
-  rsa_bits = 4096
-}
-
 resource "azurerm_linux_virtual_machine" "linuxvm" {
   name = "${var.vm_name}_${var.environment_name}"
   resource_group_name = var.resource_group_name
@@ -117,7 +105,7 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
 
   admin_ssh_key {
     username = "azureuser"
-    public_key = tls_private_key.ssh_key.public_key_openssh
+    public_key = var.ssh_key
   }
 
   boot_diagnostics {

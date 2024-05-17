@@ -10,11 +10,6 @@ variable "location" {
   description = "Infrastructure's location"
 }
 
-variable "environment_name" {
-  type = string
-  description = "Environment"
-}
-
 variable "vnet_name" {
   type = string
   description = "Name of the common vnet for the project."
@@ -28,29 +23,35 @@ variable "ssh_key" {
 
 variable "subnet_name" {
   type = string
-  description = "Name of front end's subnet"
-  default = "subnet_frontend"
+  description = "Name of the statictest server's subnet"
+  default = "subnet_statictest"
 }
 
 variable "public_ip_name" {
   type = string
-  description = "Name of the front end's public IP"
-  default = "ip_frontend"
+  description = "Name of the statictest server's public IP"
+  default = "ip_statictest"
+}
+
+variable "environment_name" {
+  type = string
+  description = "statictest environment"
+  default = "devops"
 }
 
 variable "sg_name" {
   type = string
-  description = "Name of the front end's security group"
-  default = "sg_frontend"
+  description = "Name of the statictest server's security group"
+  default = "sg_statictest"
 }
 
 variable "network_interface_name" {
   type = string
-  default = "nic_frontend"
+  default = "nic_statictest"
 }
 
 variable "vm_name" {
   type = string
-  description = "Name of the front end's virtual machine"
-  default = "frontend"
+  description = "Name of the statictest server's virtual machine"
+  default = "statictest"
 }

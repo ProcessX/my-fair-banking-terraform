@@ -41,7 +41,7 @@ variable "public_ip_name" {
 variable "environment_name" {
   type = string
   description = "Controller environment"
-  default = "tools"
+  default = "devops"
 }
 
 variable "sg_name" {

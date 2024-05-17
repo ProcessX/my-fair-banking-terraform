@@ -11,16 +11,6 @@ resource "azurerm_virtual_network" "vnet" {
   depends_on = [ azurerm_resource_group.rg ]
 }
 
-resource "tls_private_key" "ssh_key_controller" {
-  algorithm = "RSA"
-  rsa_bits = 4096
-}
-
-resource "tls_private_key" "ssh_key_backend" {
-  algorithm = "RSA"
-  rsa_bits = 4096
-}
-
 resource "tls_private_key" "ssh_key_common" {
   algorithm = "RSA"
   rsa_bits = 4096
@@ -33,10 +23,10 @@ module "controller" {
   address_space = [ "10.0.0.0/16" ]
   vnet_name = var.vnet_name
   ssh_key = tls_private_key.ssh_key_common.public_key_openssh
-  depends_on = [ azurerm_resource_group.rg, azurerm_virtual_network.vnet, tls_private_key.ssh_key_controller ]
+  depends_on = [ azurerm_resource_group.rg, azurerm_virtual_network.vnet ]
 }
-/*
 
+/*
 module "test" {
   source = "./modules/test"
   resource_group_name = var.resource_group_name
@@ -45,12 +35,15 @@ module "test" {
   depends_on = [ azurerm_resource_group.rg ]
 }
 
-module "sonarqube" {
-  source = "./modules/sonarqube"
+*/
+
+module "statictest" {
+  source = "./modules/statictest"
   resource_group_name = var.resource_group_name
   location = var.location
-  address_space = [ "10.0.0.0/16" ]
-  depends_on = [ azurerm_resource_group.rg ]
+  ssh_key = tls_private_key.ssh_key_common.public_key_openssh
+  vnet_name = var.vnet_name
+  depends_on = [ azurerm_resource_group.rg, azurerm_virtual_network.vnet ]
 }
 
 module "frontend" {
@@ -58,11 +51,12 @@ module "frontend" {
   source = "./modules/frontend"
   resource_group_name = var.resource_group_name
   location = var.location
-  address_space = [ "10.0.0.0/16" ]
+  vnet_name = var.vnet_name
+  ssh_key = tls_private_key.ssh_key_common.public_key_openssh
   environment_name = var.environment_list[count.index]
   depends_on = [ azurerm_resource_group.rg ]
 }
-*/
+
 
 
 module "backend" {
@@ -75,5 +69,5 @@ module "backend" {
   service_list = var.backend_services_list
   ssh_key = tls_private_key.ssh_key_common.public_key_openssh
   vnet_name = var.vnet_name
-  depends_on = [ azurerm_resource_group.rg, azurerm_virtual_network.vnet, tls_private_key.ssh_key_backend]
+  depends_on = [ azurerm_resource_group.rg, azurerm_virtual_network.vnet]
 }
