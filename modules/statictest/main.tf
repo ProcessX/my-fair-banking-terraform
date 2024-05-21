@@ -104,7 +104,7 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
     version   = "latest"
   }
 
-  computer_name = "controller"
+  computer_name = "statictest"
   admin_username = "azureuser"
   disable_password_authentication = true
 

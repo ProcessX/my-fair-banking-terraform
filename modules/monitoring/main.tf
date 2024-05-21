@@ -1,9 +1,8 @@
-
 resource "azurerm_subnet" "subnet" {
   name = var.subnet_name
   resource_group_name = var.resource_group_name
   virtual_network_name = var.vnet_name
-  address_prefixes = ["10.0.4.0/24"]
+  address_prefixes = ["10.0.6.0/24"]
 }
 
 resource "azurerm_public_ip" "public_ip" {
@@ -30,18 +29,6 @@ resource "azurerm_network_security_group" "nsg" {
     source_port_range = "*"
     destination_port_range = "22"
     source_address_prefix = "*"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "RDP"
-    priority                   = 1000
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "3389"
-    source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
 
@@ -92,26 +79,42 @@ resource "azurerm_storage_account" "storage" {
   }
 }
 
-resource "azurerm_windows_virtual_machine" "windowsvm" {
-  name                  = var.vm_name
-  admin_username        = "azureuser"
-  admin_password        = "Lucsim123@"
-  location              = var.location
-  resource_group_name   = var.resource_group_name
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits = 4096
+}
+
+resource "azurerm_linux_virtual_machine" "linuxvm" {
+  name = var.vm_name
+  resource_group_name = var.resource_group_name
+  location = var.location
   network_interface_ids = [azurerm_network_interface.nic.id]
-  size                  = "Standard_DS1_v2"
+  size = "Standard_DS1_v2"
 
   os_disk {
-    name                 = "osDisk-test"
-    caching              = "ReadWrite"
-    storage_account_type = "Premium_LRS"
+    name = "OsDisk-monitoring"
+    caching = "ReadWrite"
+    storage_account_type = "Standard_LRS"
   }
 
   source_image_reference {
-    publisher = "MicrosoftWindowsServer"
-    offer     = "WindowsServer"
-    sku       = "2022-datacenter-azure-edition"
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-focal"
+    sku       = "20_04-lts"
     version   = "latest"
+  }
+
+  computer_name = "monitoring"
+  admin_username = "azureuser"
+  disable_password_authentication = true
+
+  admin_ssh_key {
+    username = "azureuser"
+    public_key = var.ssh_key
+  }
+
+  boot_diagnostics {
+    storage_account_uri = azurerm_storage_account.storage.primary_blob_endpoint
   }
 
   tags = {

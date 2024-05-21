@@ -52,7 +52,7 @@ module "frontend" {
   vnet_name = var.vnet_name
   ssh_key = tls_private_key.ssh_key_common.public_key_openssh
   environment_name = var.environment_list[count.index]
-  depends_on = [ azurerm_resource_group.rg ]
+  depends_on = [ azurerm_resource_group.rg, azurerm_virtual_network.vnet ]
 }
 
 
@@ -68,4 +68,13 @@ module "backend" {
   ssh_key = tls_private_key.ssh_key_common.public_key_openssh
   vnet_name = var.vnet_name
   depends_on = [ azurerm_resource_group.rg, azurerm_virtual_network.vnet]
+}
+
+module "monitoring" {
+  source = "./modules/monitoring"
+  resource_group_name = var.resource_group_name
+  location = var.location
+  ssh_key = tls_private_key.ssh_key_common.public_key_openssh
+  vnet_name = var.vnet_name
+  depends_on = [ azurerm_resource_group.rg, azurerm_virtual_network.vnet ]
 }
